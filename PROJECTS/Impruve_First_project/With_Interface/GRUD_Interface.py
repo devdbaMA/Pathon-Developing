@@ -2,21 +2,27 @@ import FreeSimpleGUI as sg
 from PROJECTS.Impruve_First_project.With_Interface.Functions import get_dat_n, put_dat
 import os
 
+import time
+
+now = time.strftime("%d.%m.%Y %H:%M:%S")
+
 file_path = 'D:\\My_DOC\\data_text\\list_info.txt'
 
 # Define the layout of the window
 layout = [
     [sg.Text("Input data")],
     [sg.InputText(key='input_data'),
-     sg.Button("ADD")],
-    [sg.Listbox(values=[], size=(50, 10), key='listbox')],
-     [sg.Button("EDIT"),
-     sg.Button("SHOW"),
-     sg.Button("DELETE")]
+     sg.Button("ADD", size=(8,1)),],
+    [sg.Listbox(values=[], size=(54, 10), key='listbox')],
+     [sg.Button("EDIT", size=(12, 1)),
+     sg.Button("SHOW", size=(12, 1)),
+     sg.Button("DELETE", size=(12, 1)),
+     sg.Button("CLOSE", size=(12, 1))]
 ]
 
 # Create the window
 window = sg.Window('CRUD Projects', layout, font=('Helvetica', 12))
+
 
 while True:
     event, values = window.read()
@@ -61,6 +67,8 @@ while True:
                 dat = get_dat_n()
                 window['listbox'].update(dat)
                 window['input_data'].update([])
+        case "CLOSE":
+            break
 
 
 window.close()
