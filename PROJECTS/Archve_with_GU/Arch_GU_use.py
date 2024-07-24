@@ -2,6 +2,7 @@ import FreeSimpleGUI as sg
 import zipfile
 import os
 
+# Define GUI elements
 label1 = sg.Text("Select files to compress")
 label2 = sg.Text("Select destination folder")
 label3 = sg.Text("Enter name for compressed file (without extension)")
@@ -21,12 +22,12 @@ layout = [
     [btn_compress]
 ]
 
-window = sg.Window("FILE COMPRESSER", layout)
+window = sg.Window("FILE COMPRESSOR", layout)
 
 while True:
     event, value = window.read()
 
-    if event == sg.WIN_CLOSED:
+    if event == sg.WIN_CLOSED or event is None:
         break
 
     if event == "Compress":
@@ -38,12 +39,18 @@ while True:
             sg.popup("Please select files, a destination folder, and enter a file name.")
             continue
 
-        zip_filepath = os.path.join(folder, f"{zip_filename}.zip")
+        # Ensure the filename ends with .zip
+        if not zip_filename.endswith('.zip'):
+            zip_filename += '.zip'
+        zip_filepath = os.path.join(folder, zip_filename)
 
-        with zipfile.ZipFile(zip_filepath, 'w') as zipf:
-            for filepath in filepaths:
-                zipf.write(filepath, os.path.basename(filepath))
-
-        sg.popup("Files compressed successfully!")
+        try:
+            # Create a ZIP file with compression
+            with zipfile.ZipFile(zip_filepath, 'w', zipfile.ZIP_DEFLATED) as zipf:
+                for filepath in filepaths:
+                    zipf.write(filepath, os.path.basename(filepath))
+            sg.popup("Files compressed and archived successfully!")
+        except Exception as e:
+            sg.popup(f"An error occurred: {e}")
 
 window.close()
