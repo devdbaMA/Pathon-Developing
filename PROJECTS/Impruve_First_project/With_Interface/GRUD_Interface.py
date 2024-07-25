@@ -1,36 +1,29 @@
 import FreeSimpleGUI as sg
 from PROJECTS.Impruve_First_project.With_Interface.Functions import get_dat_n, put_dat
+import time
 import os
 
-import time
-
-
-
 file_path = 'D:\\My_DOC\\data_text\\list_info.txt'
+sg.theme("Yellow")
 
 # Define the layout of the window
 layout = [
-    [sg.Text('', key='-TIME-', font=('Helvetica', 20))],
+    [sg.Text('', key='-TIME-', font=('Helvetica', 10))],
     [sg.Text("Input data")],
     [sg.InputText(key='input_data'),
      sg.Button("ADD", size=(8,1)),],
     [sg.Listbox(values=[], size=(54, 10), key='listbox')],
      [sg.Button("EDIT", size=(12, 1)),
      sg.Button("SHOW", size=(12, 1)),
-     sg.Button("DELETE", size=(12, 1)),
+     sg.Button("DELETE", key="DELETE", size=(12, 1)),
      sg.Button("CLOSE", size=(12, 1))]
 ]
-
 # Create the window
 window = sg.Window('CRUD Projects', layout, font=('Helvetica', 12), finalize=True)
 
-
-
 while True:
     now = time.strftime("%d.%m.%Y %H:%M:%S")
-
     event, values = window.read(timeout=1000)
-
     window["-TIME-"].update(now)
 
     match event:
@@ -82,6 +75,5 @@ while True:
                 window['input_data'].update([])
         case "CLOSE":
             break
-
 
 window.close()
