@@ -4,12 +4,13 @@ import os
 
 import time
 
-now = time.strftime("%d.%m.%Y %H:%M:%S")
+
 
 file_path = 'D:\\My_DOC\\data_text\\list_info.txt'
 
 # Define the layout of the window
 layout = [
+    [sg.Text('', key='-TIME-', font=('Helvetica', 20))],
     [sg.Text("Input data")],
     [sg.InputText(key='input_data'),
      sg.Button("ADD", size=(8,1)),],
@@ -21,23 +22,32 @@ layout = [
 ]
 
 # Create the window
-window = sg.Window('CRUD Projects', layout, font=('Helvetica', 12))
+window = sg.Window('CRUD Projects', layout, font=('Helvetica', 12), finalize=True)
+
 
 
 while True:
-    event, values = window.read()
+    now = time.strftime("%d.%m.%Y %H:%M:%S")
+
+    event, values = window.read(timeout=1000)
+
+    window["-TIME-"].update(now)
+
     match event:
         case "ADD":  # INSERT OPERATION
-            in_data = values['input_data'] + "\n"
-            if os.path.exists(file_path):
+            try:
+                in_data = values['input_data'] + "\n"
+                if os.path.exists(file_path):
+                    dat = get_dat_n()
+                else:
+                    dat = []
+                dat.append(in_data)
+                put_dat(dat)
+                window['input_data'].update([])
                 dat = get_dat_n()
-            else:
-                dat = []
-            dat.append(in_data)
-            put_dat(dat)
-            window['input_data'].update([])
-            dat = get_dat_n()
-            window['listbox'].update(dat)
+                window['listbox'].update(dat)
+            except indexError:
+                sg.popup("Enter the data")
 
         case "SHOW":  # INSERT OPERATION
             if os.path.exists(file_path):
@@ -47,14 +57,17 @@ while True:
                 window['listbox'].update([])
 
         case "DELETE":  # DELETE DATA FROM LIST
-            selected_item = values['listbox']
-            if selected_item:
-                dat = get_dat_n()
-                dat.remove(selected_item[0])
-                put_dat(dat)
-                window['listbox'].update([])
-                dat = get_dat_n()
-                window['listbox'].update(dat)
+            try:
+                selected_item = values['listbox']
+                if selected_item:
+                    dat = get_dat_n()
+                    dat.remove(selected_item[0])
+                    put_dat(dat)
+                    window['listbox'].update([])
+                    dat = get_dat_n()
+                    window['listbox'].update(dat)
+            except ValueError:
+                sg.popup("Select row for deteed")
 
         case "EDIT": # EDITING DATA FROM LIST
             selected_item = values['listbox']
